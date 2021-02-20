@@ -1,4 +1,3 @@
 tweepy
 flask
-PIL
 time
