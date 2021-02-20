@@ -29,7 +29,7 @@ def main():
     days=829
     for i in range(1,829):
         timer(days-i)
-        time.sleep(10)
+        time.sleep(86400)
 
 if __name__ == "__main__":
     main()
