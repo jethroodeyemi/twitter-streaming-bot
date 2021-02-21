@@ -20,7 +20,7 @@ def timer(days):
     api = tweepy.API(auth)
  
     media = api.media_upload(f"images/{days}.png")
-    tweet = f"Days left till Buhari leaves Aso Rock: {days} \n#BuhariCountdown"
+    tweet = f"Days left till Buhari leaves Aso Rock: {days} \n#BuhariCountdown "
     api.update_status(status=tweet, media_ids=[media.media_id])
     print(days)
     return
