@@ -26,8 +26,8 @@ def timer(days):
     return
 
 def main():
-    days=829
-    for i in range(1,829):
+    days=828
+    for i in range(1,828):
         timer(days-i)
         time.sleep(86400)
 
