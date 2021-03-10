@@ -37,7 +37,7 @@ class FavRetweetListener(tweepy.StreamListener):
         #         tweet.user.follow()
         #     except Exception as e:
         #         logger.error("Error on fav, retweet and follow", exc_info=True)
-        sleep(5)
+        sleep(60)
 
     def on_error(self, status):
         logger.error(status)
