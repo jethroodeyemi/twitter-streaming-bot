@@ -3,6 +3,7 @@ import tweepy
 import logging
 from config import create_api
 import json
+from time import sleep
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
