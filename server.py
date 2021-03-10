@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    bot.main()
+    bot.main(["Wizkid"])
     return "Retweeting and Liking..."
 
 app.run(host= '0.0.0.0', port=environ.get('PORT'))
