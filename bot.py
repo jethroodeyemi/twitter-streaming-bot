@@ -1,35 +1,51 @@
+
 import tweepy
-import time
+import logging
+from config import create_api
+import json
 
-def timer(days):
-    twitter_auth_keys = { 
-        "consumer_key"        : "CNpeVrrmf57DOrWzETKpzwRA6",
-        "consumer_secret"     : "yfypGXmBQ72QxPuMXFq7AcJ8hA9N8br1Pu7D9YRtlLVEABhyNr",
-        "access_token"        : "1243164206481973249-1yoxu697UWVezOsU5q6CN1DImPpim6",
-        "access_token_secret" : "qWgAV18xfNRfwqC6nkjLQSP5yOZx8KeZgoMT3HtOGrAZ2"
-    }
- 
-    auth = tweepy.OAuthHandler(
-            twitter_auth_keys['consumer_key'],
-            twitter_auth_keys['consumer_secret']
-            )
-    auth.set_access_token(
-            twitter_auth_keys['access_token'],
-            twitter_auth_keys['access_token_secret']
-            )
-    api = tweepy.API(auth)
- 
-    media = api.media_upload(f"images/{days}.png")
-    tweet = f"Days left till Buhari leaves Aso Rock: {days} \n#BuhariCountdown "
-    api.update_status(status=tweet, media_ids=[media.media_id])
-    print(days)
-    return
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger()
 
-def main():
-    days=827
-    for i in range(1,827):
-        timer(days-i)
-        time.sleep(86400)
+class FavRetweetListener(tweepy.StreamListener):
+    def __init__(self, api):
+        self.api = api
+        self.me = api.me()
+
+    def on_status(self, tweet):
+        logger.info(f"Processing tweet id {tweet.id}")
+        if tweet.in_reply_to_status_id is not None or \
+            tweet.user.id == self.me.id:
+            # This tweet is a reply or I'm its author so, ignore it
+            return
+        if not tweet.favorited:
+            # Mark it as Liked, since we have not done it yet
+            try:
+                tweet.favorite()
+            except Exception as e:
+                logger.error("Error on fav", exc_info=True)
+        if not tweet.retweeted:
+            # Retweet, since we have not retweeted it yet
+            try:
+                tweet.retweet()
+            except Exception as e:
+                logger.error("Error on fav and retweet", exc_info=True)
+        # if not tweet.user.following:
+        #     # Follow
+        #     try:
+        #         tweet.user.follow()
+        #     except Exception as e:
+        #         logger.error("Error on fav, retweet and follow", exc_info=True)
+        sleep(50)
+
+    def on_error(self, status):
+        logger.error(status)
+
+def main(keywords):
+    api = create_api()
+    tweets_listener = FavRetweetListener(api)
+    stream = tweepy.Stream(api.auth, tweets_listener)
+    stream.filter(track=keywords, languages=["en"])
 
 if __name__ == "__main__":
-    main()
+    main(["Wizkid"])
