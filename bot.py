@@ -28,7 +28,7 @@ def check_mentions(api, keywords, since_id):
                 in_reply_to_status_id=tweet.id,
                 auto_populate_reply_metadata=True
             )
-            time.sleep(300)
+            time.sleep(600)
             # api.update_with_media('/image.jpg', status='message')
     return new_since_id
 
